@@ -87,7 +87,7 @@ fn replace_math(input: String) -> String {
             if let Some(content) = caps.name("content_double") {
                 format!("[$]{}[/$]", content.as_str())
             } else if let Some(content) = caps.name("content_single") {
-                format!("[$]{}[/$]", content.as_str())
+                format!("[$$]{}[/$$]", content.as_str())
             } else {
                 unreachable!()
             }
