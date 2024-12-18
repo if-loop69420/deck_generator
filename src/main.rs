@@ -76,10 +76,10 @@ fn remove_links(input: String) -> String {
 
 fn replace_math(input: String) -> String {
     let st_replace = ST_REGEX.replace_all(&input, |caps: &Captures| {
-        ""
+        "<="
     });
     let math_replace = MATH_REGEX
-        .replace_all(&input, |caps: &Captures| {
+        .replace_all(&st_replace, |caps: &Captures| {
             if let Some(content) = caps.name("content_double") {
                 format!("[$]{}[/$]", content.as_str())
             } else if let Some(content) = caps.name("content_single") {
