@@ -1,5 +1,6 @@
+use std::fs::DirEntry;
+use std::str::FromStr;
 use std::sync::LazyLock;
-use std::{fs::FileType, str::FromStr};
 
 use genanki_rs::{basic_model, Deck};
 use markdown::Options;
@@ -107,8 +108,16 @@ fn remove_tags(input: String) -> String {
 fn main() {
     let config = read_config();
     let mut deck = Deck::new(config.deck_id, &config.deck_name, &config.deck_description);
+    let mut files: Vec<DirEntry> = Vec::new();
     for i in std::fs::read_dir(config.input_dir).unwrap() {
         let file = i.unwrap();
+        if file.file_name().into_string().unwrap().contains(".md") {
+            files.push(file);
+        }
+    }
+
+    for i in files {
+        let file = i;
         let file_name: String = file.file_name().into_string().unwrap();
         let path = file.path();
         println!("Reading file: {}", path.display());
