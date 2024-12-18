@@ -9,7 +9,7 @@ use regex::{Captures, Regex};
 const TAG_REGEX: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"#(?<tag>[^#\s]+)").unwrap());
 const LINK_REGEX: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#"(\[{2}.*?\]{2})"#).unwrap());
 const MATH_REGEX: LazyLock<Regex> = LazyLock::new(|| {
-    Regex::new(r"(:?(\${2}\s*)(?<content_double>.*?)(\${2}))|(:?(\$\s*)(?<content_single>.*?)(\$))|(?<backslash>\\)")
+    Regex::new(r"(:?(\${2}\s*)(?<content_double>.*?)(\${2}))|(:?(\$\s*)(?<content_single>.*?)(\$))")
         .unwrap()
 });
 const SET_REGEX: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#"(:?\\(?<set>[A-Z]+))"#).unwrap());
@@ -17,6 +17,8 @@ const SET_REGEX: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#"(:?\\(?<set>[A
 const TITLE_REGEX: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"^#\s+").unwrap());
 
 const ST_REGEX: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#"(?<gt>≥)|(?<st>≤)"#).unwrap());
+
+const BS_REGEX: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#" \\ "#).unwrap());
 
 #[derive(serde::Deserialize, serde::Serialize)]
 pub struct Config {
@@ -75,7 +77,9 @@ fn remove_links(input: String) -> String {
 }
 
 fn replace_math(input: String) -> String {
-    let st_replace = ST_REGEX.replace_all(&input, |caps: &Captures| {
+    let bs_replace = BS_REGEX.replace_all(&input, |_caps: &Captures| "\\\\");
+
+    let st_replace = ST_REGEX.replace_all(&bs_replace, |caps: &Captures| {
         if caps.name("st").is_some() {
             "<="
         } else {
