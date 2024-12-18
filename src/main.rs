@@ -16,7 +16,7 @@ const SET_REGEX: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#"(:?\\(?<set>[A
 
 const TITLE_REGEX: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"^#\s+").unwrap());
 
-const ST_REGEX: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"≤").unwrap());
+const ST_REGEX: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#"(?<gt>≥)|(?<st>≤)"#).unwrap());
 
 #[derive(serde::Deserialize, serde::Serialize)]
 pub struct Config {
@@ -76,7 +76,11 @@ fn remove_links(input: String) -> String {
 
 fn replace_math(input: String) -> String {
     let st_replace = ST_REGEX.replace_all(&input, |caps: &Captures| {
-        "<="
+        if caps.name("st") {
+            "<="
+        } else {
+            ">="
+        }
     });
     let math_replace = MATH_REGEX
         .replace_all(&st_replace, |caps: &Captures| {
