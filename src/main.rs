@@ -18,7 +18,7 @@ const TITLE_REGEX: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"^#\s+").unwra
 
 const ST_REGEX: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#"(?<gt>≥)|(?<st>≤)"#).unwrap());
 
-const BS_REGEX: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"\s+\\s+").unwrap());
+const BS_REGEX: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"\s+\\\s+").unwrap());
 
 #[derive(serde::Deserialize, serde::Serialize)]
 pub struct Config {
