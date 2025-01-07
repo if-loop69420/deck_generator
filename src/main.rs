@@ -58,7 +58,7 @@ impl FromStr for Note {
         body = remove_links(body);
         body = remove_tags(body);
         body = replace_math(body);
-        let options = Options::gfm();
+        let options = Options::default();
         body = markdown::to_html_with_options(&body, &options).unwrap();
         Ok(Self { title, body, tags })
     }
@@ -77,7 +77,7 @@ fn remove_links(input: String) -> String {
 }
 
 fn replace_math(input: String) -> String {
-    let bs_replace = BS_REGEX.replace_all(&input, |_caps: &Captures| r" \\\\\\\\ ");
+    let bs_replace = BS_REGEX.replace_all(&input, |_caps: &Captures| r" \\\\ ");
 
     let st_replace = ST_REGEX.replace_all(&bs_replace, |caps: &Captures| {
         if caps.name("st").is_some() {
