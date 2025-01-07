@@ -149,7 +149,7 @@ fn main() {
         {
             continue;
         }
-        let note: Note = file_content.parse().unwrap();
+        let note: Note = Note::from_str(&file_content).unwrap();
         let mut note: genanki_rs::Note = note.into();
         note = note.guid(file_name);
         deck.add_note(note);
@@ -168,7 +168,7 @@ mod tests {
                 #[test]
                 fn $name() {
                     let data = include_str!(concat!($directory, "/", $name_str, "/input.md"));
-                    let note: Note = data.parse().unwrap();
+                    let note: Note = Note::from_str(data).unwrap();
                     assert_eq!(note.body, include_str!(concat!($directory, "/", $name_str, "/body.html")));
                     assert_eq!(note.title, include_str!(concat!($directory, "/", $name_str, "/title.html")).trim());
                     assert_eq!(note.tags, include_str!(concat!($directory, "/", $name_str, "/tags.txt")).trim().split('\n').collect::<Vec<&str>>());
