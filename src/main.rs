@@ -20,6 +20,8 @@ const ST_REGEX: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#"(?<gt>≥)|(?<s
 
 const BS_REGEX: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"\s+\\\s+").unwrap());
 
+const ASTERISK_REGEX: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"\s+\*\s+").unwrap());
+
 #[derive(serde::Deserialize, serde::Serialize)]
 pub struct Config {
     input_dir: String,
@@ -61,6 +63,7 @@ impl FromStr for Note {
         let options = Options::default();
         body = markdown::to_html_with_options(&body, &options).unwrap();
         body = BS_REGEX.replace_all(&body, r" &#92;&#92; ").to_string();
+        body = ASTERISK_REGEX.replace_all(&body, r"&#42;").to_string();
         Ok(Self { title, body, tags })
     }
 }
