@@ -77,7 +77,7 @@ fn remove_links(input: String) -> String {
 }
 
 fn replace_math(input: String) -> String {
-    let bs_replace = BS_REGEX.replace_all(&input, |_caps: &Captures| " \\\\\\\\ ");
+    let bs_replace = BS_REGEX.replace_all(&input, |_caps: &Captures| " \\\\\\\\\\\\\\\\ ");
 
     let st_replace = ST_REGEX.replace_all(&bs_replace, |caps: &Captures| {
         if caps.name("st").is_some() {
