@@ -77,7 +77,7 @@ fn remove_links(input: String) -> String {
 }
 
 fn replace_math(input: String) -> String {
-    let bs_replace = BS_REGEX.replace_all(&input, |_caps: &Captures| r" \\\\\\\\ ");
+    let bs_replace = BS_REGEX.replace_all(&input, |_caps: &Captures| r" \\\\ ");
 
     let st_replace = ST_REGEX.replace_all(&bs_replace, |caps: &Captures| {
         if caps.name("st").is_some() {
@@ -92,13 +92,19 @@ fn replace_math(input: String) -> String {
                 if content.as_str() == "*" {
                     format!("\\[$$\\]\\*\\[/$$\\]")
                 } else {
-                    format!("\\[$$\\]{}\\[/$$\\]", content.as_str())
+                    format!(
+                        "[latex]\\begin{{displaymath}}{}\\end{{displaymath}}[/latex]",
+                        content.as_str()
+                    )
                 }
             } else if let Some(content) = caps.name("content_single") {
                 if content.as_str() == "*" {
                     format!("\\[$\\]\\*\\[/$\\]")
                 } else {
-                    format!("\\[$\\]{}\\[/$\\]", content.as_str())
+                    format!(
+                        "[latex]\\begin{{displaymath}}{}\\end{{displaymath}}[/latex]",
+                        content.as_str()
+                    )
                 }
             } else {
                 unreachable!()
@@ -169,8 +175,8 @@ mod tests {
                 fn $name() {
                     let data = include_str!(concat!($directory, "/", $name_str, "/input.md"));
                     let note: Note = Note::from_str(data).unwrap();
-                    assert_eq!(note.body, include_str!(concat!($directory, "/", $name_str, "/body.html")));
-                    assert_eq!(note.title, include_str!(concat!($directory, "/", $name_str, "/title.html")).trim());
+                    assert_eq!(&note.body, include_str!(concat!($directory, "/", $name_str, "/body.html")));
+                    assert_eq!(&note.title, include_str!(concat!($directory, "/", $name_str, "/title.html")).trim());
                     assert_eq!(note.tags, include_str!(concat!($directory, "/", $name_str, "/tags.txt")).trim().split('\n').collect::<Vec<&str>>());
                 }
             )*
