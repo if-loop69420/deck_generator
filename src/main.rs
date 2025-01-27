@@ -13,7 +13,7 @@ const MATH_REGEX: LazyLock<Regex> = LazyLock::new(|| {
         .unwrap()
 });
 const SET_REGEX: LazyLock<Regex> =
-    LazyLock::new(|| Regex::new(r#"(:?\\(?<set>[A-Z]+)(?<after>[\s|\^|\$|\\]))"#).unwrap());
+    LazyLock::new(|| Regex::new(r#"(:?\\(?<set>[A-Z]+)(?<after>[\s\^\$\\]))"#).unwrap());
 
 const TITLE_REGEX: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"^#\s+").unwrap());
 
