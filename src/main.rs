@@ -120,7 +120,7 @@ fn replace_math(input: String) -> String {
             if let Some(content) = caps.name("set") {
                 format!("\\\\mathbb{{ {} }}", content.as_str())
             } else if let Some(content) = caps.name("after") {
-                eprintln!("At after");
+                println!("At after");
                 format!("{}", content.as_str())
             } else {
                 unreachable!();
