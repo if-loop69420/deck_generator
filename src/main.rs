@@ -12,7 +12,8 @@ const MATH_REGEX: LazyLock<Regex> = LazyLock::new(|| {
     Regex::new(r"(:?(\${2}\s*)(?<content_double>.*?)(\${2}))|(:?(\$\s*)(?<content_single>.*?)(\$))")
         .unwrap()
 });
-const SET_REGEX: LazyLock<Regex> = LazyLock::new(|| Regex::new(r#"(:?\\(?<set>[A-Z]+))"#).unwrap());
+const SET_REGEX: LazyLock<Regex> =
+    LazyLock::new(|| Regex::new(r#"(:?\\(?<set>[A-Z]+)(?<after>[\s|\^]))"#).unwrap());
 
 const TITLE_REGEX: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"^#\s+").unwrap());
 
@@ -118,6 +119,8 @@ fn replace_math(input: String) -> String {
         .replace_all(&math_replace, |caps: &Captures| {
             if let Some(content) = caps.name("set") {
                 format!("\\\\mathbb{{ {} }}", content.as_str())
+            } else if let Some(content) = caps.name("after") {
+                content.as_str().to_string()
             } else {
                 unreachable!();
             }
